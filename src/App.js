@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import { Header } from "./components/Header";
+import { SignUpForm } from "./components/SignUpForm";
 
 function App() {
+  const [name, setName] = useState("");
+  const [showHeader, setShowHeader] = useState(true);
+  const [showSignUpForm, setShowSignUpForm] = useState(false);
+  const [values, setValues] = useState({});
+
+  function captureName(name, showHeader) {
+    setName(name);
+    setShowHeader(showHeader);
+    setShowSignUpForm(!showHeader);
+  }
+
+  function getFormData(values, showSignUpForm) {
+    setValues(values);
+    setShowSignUpForm(showSignUpForm);
+    setShowHeader(!showSignUpForm);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {showHeader ? <Header onChange={captureName} /> : null}
+      {showSignUpForm ? (
+        <SignUpForm name={name} getFormData={getFormData} />
+      ) : null}
     </div>
   );
 }
