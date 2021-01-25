@@ -3,15 +3,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 
+const initialErrorState = {
+  emailError: "",
+  dateError: "",
+  addressError: "",
+  mobileError: "",
+};
 export const SignUpForm = (props) => {
   const [selectedDate, setSelectedDate] = useState("");
-  const [hideTextArea, setHideTextArea] = useState(true);
-  const [errors, setErrors] = useState({
-    emailError: "",
-    dateError: "",
-    addressError: "",
-    mobileError: "",
-  });
+  const [errors, setErrors] = useState(initialErrorState);
 
   const [values, handleChange] = useForm({
     name: props.name,
@@ -20,7 +20,6 @@ export const SignUpForm = (props) => {
     gender: "Male",
     address: "",
     mobile: "",
-    dob: selectedDate,
   });
 
   const validate = () => {
@@ -29,7 +28,8 @@ export const SignUpForm = (props) => {
     }
     if (values.email) {
       if (!values.email.includes("@")) {
-        setErrors((errors) => ({ ...errors, emailError: "Invalid email" }));
+        console.log(errors);
+        setErrors((errors) => ({ emailError: "Invalid email" }));
       }
     }
     if (!selectedDate) {
@@ -55,8 +55,7 @@ export const SignUpForm = (props) => {
         }));
       }
     }
-
-    if (!Object.entries(errors)) {
+    if (Object.entries(errors).length > 0) {
       return false;
     }
     return true;
@@ -66,14 +65,11 @@ export const SignUpForm = (props) => {
     event.preventDefault();
     setErrors({});
     const isValid = validate();
+    console.log(isValid);
     if (isValid) {
-      setHideTextArea(false);
+      setErrors(initialErrorState);
+      props.getFormData(values, false, selectedDate);
     }
-  }
-
-  function handlePageChange() {
-    setHideTextArea(true);
-    props.getFormData(values, false);
   }
 
   return (
@@ -125,7 +121,7 @@ export const SignUpForm = (props) => {
         <div>
           <DatePicker
             className="date-picker"
-            name="selectedDate"
+            name="dob"
             selected={selectedDate}
             showYearDropdown
             showMonthDropdown
@@ -170,31 +166,6 @@ export const SignUpForm = (props) => {
           </button>
         </div>
       </form>
-      <div hidden={hideTextArea}>
-        <div>
-          <textarea
-            readOnly
-            className="text-area-field"
-            value={
-              "Hi " +
-              values.name +
-              ", " +
-              " \nYour sign up is complete. Details registered with us are mentione below:" +
-              "\nEmail: " +
-              values.email +
-              "\nMobile: " +
-              values.mobile +
-              "\nDOB: " +
-              selectedDate +
-              "\nGender: " +
-              values.gender
-            }
-          ></textarea>
-        </div>
-        <div>
-          <button onClick={handlePageChange}>Go back to Welcome Page</button>
-        </div>
-      </div>
     </div>
   );
 };

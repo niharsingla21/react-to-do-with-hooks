@@ -25,7 +25,6 @@ export const Header = (props) => {
   const handleProceed = () => {
     const isValid = validate();
     if (isValid) {
-      console.log(values.name);
       props.onChange(values.name, false);
     }
   };
