@@ -11,7 +11,7 @@ const initialErrorState = {
 };
 export const SignUpForm = (props) => {
   const [selectedDate, setSelectedDate] = useState("");
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState(initialErrorState);
 
   const [values, handleChange] = useForm({
     name: props.name,
@@ -62,9 +62,9 @@ export const SignUpForm = (props) => {
     }
 
     if (
-      errors.emailError === null ||
-      errors.addressError === null ||
-      errors.dateError === null ||
+      errors.emailError === null &&
+      errors.addressError === null &&
+      errors.dateError === null &&
       errors.mobileError === null
     ) {
       return true;
