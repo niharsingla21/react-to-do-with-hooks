@@ -4,14 +4,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
 
 const initialErrorState = {
-  emailError: "",
-  dateError: "",
-  addressError: "",
-  mobileError: "",
+  emailError: null,
+  dateError: null,
+  addressError: null,
+  mobileError: null,
 };
 export const SignUpForm = (props) => {
   const [selectedDate, setSelectedDate] = useState("");
-  const [errors, setErrors] = useState(initialErrorState);
+  const [errors, setErrors] = useState({});
 
   const [values, handleChange] = useForm({
     name: props.name,
@@ -24,29 +24,34 @@ export const SignUpForm = (props) => {
 
   const validate = () => {
     if (!values.email) {
-      setErrors(() => ({ emailError: "Enter email address" }));
+      setErrors({ emailError: "Enter email address" });
     }
+
     if (values.email) {
       if (!values.email.includes("@")) {
-        console.log(errors);
-        setErrors((errors) => ({ emailError: "Invalid email" }));
+        setErrors({ emailError: "Invalid email" });
       }
     }
+    console.log(errors);
     if (!selectedDate) {
       setErrors((errors) => ({ ...errors, dateError: "Enter your DOB" }));
+      console.log(errors);
     }
+
     if (values.mobile.length < 10 && values.mobile.length === 0) {
       setErrors((errors) => ({
         ...errors,
         mobileError: "Enter valid mobile number",
       }));
     }
+
     if (!values.address) {
       setErrors((errors) => ({
         ...errors,
         addressError: "Enter your address",
       }));
     }
+
     if (values.address) {
       if (values.address.length < 10) {
         setErrors((errors) => ({
@@ -55,15 +60,21 @@ export const SignUpForm = (props) => {
         }));
       }
     }
-    if (Object.entries(errors).length > 0) {
-      return false;
+
+    if (
+      errors.emailError === null ||
+      errors.addressError === null ||
+      errors.dateError === null ||
+      errors.mobileError === null
+    ) {
+      return true;
     }
-    return true;
+    return false;
   };
 
   function onSubmit(event) {
     event.preventDefault();
-    setErrors({});
+    setErrors(initialErrorState);
     const isValid = validate();
     console.log(isValid);
     if (isValid) {
